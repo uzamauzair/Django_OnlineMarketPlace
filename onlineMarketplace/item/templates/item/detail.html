@@ -1,0 +1,55 @@
+{% extends 'core/base.html' %}
+
+{% block title %} {{item.name}} {% endblock %}
+
+{% block content %}
+    <div class="grid grid-cols-5 gap-6">
+        <div class="col-span-3">
+            <img src="{{ item.image.url }}" class="rounded-xl">
+        </div>
+        <div class="col-span-2 p-6 rounded-xl bg-gray-100">
+            <h1 class="text-3xl">{{ item.name }}</h1>
+            <p class="text-gray-500"><strong >Price : </strong>{{ item.price }}</p>
+            <p class="text-gray-500"><strong >Seller : </strong>{{ item.created_by }}</p>
+            {% if item.description %}
+            <p class="text-gray-700">
+                <strong class="text-gray-500">Description : </strong>
+                {{ item.description }}
+            </p>
+            <p>{{item.category}}</p>
+            {% endif %}
+            {% if request.user == item.created_by %}
+                <div class="mt-6 p-6 bg-white rounded-xl">
+                    <p>This is your item </p>
+                    <a href="{% url 'item:edit' item.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl">Edit item</a>
+                    <a href="{% url 'item:delete' item.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-red-500 text-white rounded-xl">Delete item</a>
+                </div>
+            {% else %}
+            <a href="{% url 'conversation:new' item.id %}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white hover:bg-teal-700 rounded-xl">
+                Contact Seller
+            </a>
+            {% endif %}
+            
+        </div>
+    </div>
+    <div class="mt-6 bg-gray-100 rounded-xl px-6 py-12">
+        <h2 class="text-center text-2xl mb-12">Related Items</h2>
+
+        <div class="grid grid-cols-3 gap-3">
+            {% for item in related_items %}
+                <div>
+                    <a href="{% url 'item:detail' item.id %}"> <!-- item.detail url and item.id foriegn key  -->
+                        <div>
+                            <img src="{{ item.image.url }}" class="rounded-t-xl" alt="" />
+                        </div>
+                        <div class="p-6 bg-white rounded-b-xl">
+                            <h2 class="text-2xl">{{ item.name }}</h2>
+                            <p class="text-gray-500">Price : {{ item.price }}</p>
+                        
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
